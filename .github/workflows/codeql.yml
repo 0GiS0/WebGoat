@@ -77,7 +77,7 @@ jobs:
  
     - run: |
         echo "Run maven"
-        mvn clean packagesh
+        mvn clean package
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
