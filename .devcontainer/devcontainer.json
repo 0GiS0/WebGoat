@@ -19,7 +19,14 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "./mvnw clean install && ./mvnw spring-boot:run"
+	"postCreateCommand": "./mvnw clean install && ./mvnw spring-boot:run",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot-chat"
+			]
+		}
+	}
 
 	// Configure tool-specific properties.
 	// "customizations": {},
