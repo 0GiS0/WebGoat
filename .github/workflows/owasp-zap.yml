@@ -9,8 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan ZAP website
     steps:
-      - name: Build docker image
-        run: docker build -t webgoat .
+    -   uses: actions/checkout@v3
+    -   name: Set up JDK 17
+        uses: actions/setup-java@v3
+          with:
+            distribution: 'temurin'
+            java-version: 17
+            architecture: x64
+    -   name: "Set up QEMU"
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v2.2.0
+    -   name: "Set up Docker Buildx"
+        if: runner.os == 'Linux'
+        uses: docker/setup-buildx-action@v3
+    -   name: Docker WebGoat build"
+        if: runner.os == 'Linux'
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: false
+          build-args: |
+            webgoat_version=${{ env.WEBGOAT_MAVEN_VERSION }}
       - name: Execute webgoat in a container
         run: docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -d
       - name: ZAP Scan
