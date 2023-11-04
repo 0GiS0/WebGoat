@@ -41,7 +41,7 @@ jobs:
           build-args: |
             webgoat_version=${{ env.WEBGOAT_MAVEN_VERSION }}
       - name: Execute webgoat in a container
-        run: docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -d
+        run: docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -d webgoat
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.3.0
         with:
