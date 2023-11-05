@@ -47,7 +47,7 @@ steps:
   displayName: Get docker IP
 - task: CmdLine@2
   inputs:
-    script: 'echo Docker IP from ADO variable: $dockerIp'
+    script: 'echo Docker IP from ADO variable: $(dockerIp)'
   displayName: 'echo dockerIp variable'
 - task: CmdLine@2
   inputs:
@@ -56,5 +56,5 @@ steps:
 - task: owaspzap@1
   inputs:
     scantype: 'targetedScan'
-    url: 'http://$dockerIp:8080/WebGoat'
+    url: 'http://$(dockerIp):8080/WebGoat'
     
