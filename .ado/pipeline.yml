@@ -20,10 +20,6 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
 
-- task: Docker@2
+- task: CmdLine@2
   inputs:
-    command: 'build'    
-    Dockerfile: '**/Dockerfile'
-    buildContext: '.'
-    tags: webgoat
-    arguments: 'webgoat_version=17'
+    script: 'build -t webgoat -f ./Dockerfile --build-args webgoat_version=17 .'
