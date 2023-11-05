@@ -41,7 +41,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      DOCKER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoatweb)
+      DOCKER_IP=$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1)
       echo This is the docker IP: $DOCKER_IP
       echo "##vso[task.setvariable variable=dockerIp]$DOCKER_IP"
   displayName: Get docker IP
