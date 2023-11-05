@@ -40,10 +40,11 @@ steps:
 
 - bash: |
     docker logs webgoat-site
+    docker inspect  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoat-site
 
 - bash: |
     chmod -R 777  ./    
-    docker run --rm --network zap-net -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1)/WebGoat:8080 -x xml_report.xml
+    docker run --rm --network zap-net -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(docker inspect  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoat-site)/WebGoat:8080 -x xml_report.xml
     true    
   displayName: 'OWASP ZAP Scan'
 - powershell: |
