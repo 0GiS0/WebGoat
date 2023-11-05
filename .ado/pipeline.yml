@@ -31,7 +31,7 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'docker run -it -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)'
+    script: 'docker run -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)'
   displayName: 'Execute app in a container'
 
 - task: CmdLine@2
