@@ -41,36 +41,21 @@ steps:
     docker logs webgoat-site
 - bash: |
     # chmod -R 777  ./
-    docker ps
-    echo http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080
-    curl -L http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080/WebGoat
     curl -L http://localhost:8080/WebGoat
-    # docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080 -x xml_report.xml
-    true
-  displayName: 'Owasp Container Scan'
+    docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://localhost:8080/WebGoat -x xml_report.xml
+    true    
+  displayName: 'OWASP ZAP Scan'
+- powershell: |
+    $XslPath = ".ado/utils/xml_to_nunit.xslt" 
+    $XmlInputPath = "xml_report.xml"
+    $XmlOutputPath = "converted_report.xml"
+    $XslTransform = New-Object System.Xml.Xsl.XslCompiledTransform
+    $XslTransform.Load($XslPath)
+    $XslTransform.Transform($XmlInputPath, $XmlOutputPath)
+  displayName: 'PowerShell Script'
 
-# - task: CmdLine@2
-#   inputs:
-#     script: 'ip a'
-#   displayName: Get host IP
-
-# - task: CmdLine@2
-#   inputs:
-#     script: |
-#       DOCKER_IP=$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1)
-#       echo This is the docker IP: $DOCKER_IP
-#       echo "##vso[task.setvariable variable=dockerIp]$DOCKER_IP"
-#   displayName: Get docker IP
-# - task: CmdLine@2
-#   inputs:
-#     script: 'echo Docker IP from ADO variable: $(dockerIp)'
-#   displayName: 'echo dockerIp variable'
-# - task: CmdLine@2
-#   inputs:
-#     script: 'curl http://172.17.0.2:8080/WebGoat'
-#   displayName: 'cURL'
-# - task: owaspzap@1
-#   inputs:
-#     scantype: 'targetedScan'
-#     url: 'http://$(dockerIp):8080/WebGoat'
-    
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
+  inputs:
+    testResultsFormat: 'NUnit'
+    testResultsFiles: 'converted_report.xml'
