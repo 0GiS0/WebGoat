@@ -8,6 +8,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  imageName: 'webgoat'
+
 steps:
 - task: Maven@3
   inputs:
@@ -20,6 +23,12 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
 
-- task: CmdLine@2
+# - task: CmdLine@2
+#   inputs:
+#     script: 'docker build -t webgoat -f ./Dockerfile --build-args webgoat_version=17 .'
+- task: Docker@2
+  displayName: Build an image
   inputs:
-    script: 'docker build -t webgoat -f ./Dockerfile --build-args webgoat_version=17 .'
+    repository: $(imageName)
+    command: build
+    Dockerfile: ./Dockerfile
