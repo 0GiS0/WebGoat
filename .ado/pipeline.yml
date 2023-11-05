@@ -46,10 +46,14 @@ steps:
   displayName: Get docker IP
 - task: CmdLine@2
   inputs:
-    script: 'curl http://$DOCKER_IP:8080/WebGoat'
+    script: 'echo $dockerIp'
+  displayName: 'echo dockerIp variable'
+- task: CmdLine@2
+  inputs:
+    script: 'curl http://$dockerIp:8080/WebGoat'
   displayName: 'cURL'
 - task: owaspzap@1
   inputs:
     scantype: 'targetedScan'
-    url: 'http://$DOCKER_IP:8080/WebGoat'
+    url: 'http://$dockerIp:8080/WebGoat'
     
