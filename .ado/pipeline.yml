@@ -47,11 +47,11 @@ steps:
   displayName: Get docker IP
 - task: CmdLine@2
   inputs:
-    script: 'echo $dockerIp'
+    script: 'echo Docker IP from ADO variable: $dockerIp'
   displayName: 'echo dockerIp variable'
 - task: CmdLine@2
   inputs:
-    script: 'curl http://$dockerIp:8080/WebGoat'
+    script: 'curl http://172.17.0.2:8080/WebGoat'
   displayName: 'cURL'
 - task: owaspzap@1
   inputs:
