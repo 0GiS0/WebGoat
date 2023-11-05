@@ -31,7 +31,7 @@ steps:
 
 - bash: |
     docker network create zap-net
-    docker run --name webgoat-site -d --network zap-net webgoat:$(Build.BuildId)
+    docker run --name webgoat-site -d -p 8080:8080 webgoat:$(Build.BuildId)
   displayName: 'Running app in a container'
 
 - bash: |
@@ -41,28 +41,22 @@ steps:
 - bash: |
     docker logs webgoat-site
 
+- bash: |
+    chmod -R 777  ./    
+    docker run --rm --network zap-net -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1)/WebGoat:8080 -x xml_report.xml
+    true    
+  displayName: 'OWASP ZAP Scan'
+- powershell: |
+    $XslPath = ".ado/utils/xml_to_nunit.xslt" 
+    $XmlInputPath = "xml_report.xml"
+    $XmlOutputPath = "converted_report.xml"
+    $XslTransform = New-Object System.Xml.Xsl.XslCompiledTransform
+    $XslTransform.Load($XslPath)
+    $XslTransform.Transform($XmlInputPath, $XmlOutputPath)
+  displayName: 'PowerShell Script'
 
-# - bash: |
-#     # chmod -R 777  ./
-#     curl -L 
-- task: owaspzap@1
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
   inputs:
-    scantype: 'targetedScan'
-    url: 'http://localhost:8080/WebGoat'
-#     docker run --rm --network zap-net -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://webgoat-site/WebGoat:8080 -x xml_report.xml
-#     true    
-#   displayName: 'OWASP ZAP Scan'
-# - powershell: |
-#     $XslPath = ".ado/utils/xml_to_nunit.xslt" 
-#     $XmlInputPath = "xml_report.xml"
-#     $XmlOutputPath = "converted_report.xml"
-#     $XslTransform = New-Object System.Xml.Xsl.XslCompiledTransform
-#     $XslTransform.Load($XslPath)
-#     $XslTransform.Transform($XmlInputPath, $XmlOutputPath)
-#   displayName: 'PowerShell Script'
-
-# - task: PublishTestResults@2
-#   displayName: 'Publish Test Results'
-#   inputs:
-#     testResultsFormat: 'NUnit'
-#     testResultsFiles: 'converted_report.xml'
+    testResultsFormat: 'NUnit'
+    testResultsFiles: 'converted_report.xml'
