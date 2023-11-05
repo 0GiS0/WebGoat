@@ -40,14 +40,16 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoatweb
+    script: |
+      DOCKER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoatweb)
+      echo "##vso[task.setvariable variable=dockerIp;isOutput=true]$DOCKER_IP"
   displayName: Get docker IP
 - task: CmdLine@2
   inputs:
-    script: 'curl http://localhost:8080/WebGoat'
+    script: 'curl http://$DOCKER_IP:8080/WebGoat'
   displayName: 'cURL'
 - task: owaspzap@1
   inputs:
     scantype: 'targetedScan'
-    url: 'http://127.0.0.1:8080/WebGoat'
+    url: 'http://$DOCKER_IP:8080/WebGoat'
     
