@@ -30,7 +30,7 @@ steps:
     Dockerfile: ./Dockerfile
 
 - bash: |
-    'docker run --name webgoat-site -d -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)'
+    docker run --name webgoat-site -d -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)
   displayName: 'Running app in a container'
 
 # - bash: |
