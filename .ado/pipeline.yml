@@ -12,33 +12,36 @@ variables:
   imageName: 'webgoat'
 
 steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.17'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
-- task: Docker@2
-  displayName: Build an image
-  inputs:
-    repository: $(imageName)
-    command: build
-    Dockerfile: ./Dockerfile
+# - task: Maven@3
+#   inputs:
+#     mavenPomFile: 'pom.xml'
+#     mavenOptions: '-Xmx3072m'
+#     javaHomeOption: 'JDKVersion'
+#     jdkVersionOption: '1.17'
+#     jdkArchitectureOption: 'x64'
+#     publishJUnitResults: true
+#     testResultsFiles: '**/surefire-reports/TEST-*.xml'
+#     goals: 'package'
+# - task: Docker@2
+#   displayName: Build an image
+#   inputs:
+#     repository: $(imageName)
+#     command: build
+#     Dockerfile: ./Dockerfile
 
-- task: CmdLine@2
-  inputs:
-    script: 'docker run --name webgoatweb -d -p 8081:8080 -p 9091:9090 webgoat:$(Build.BuildId)'
-  displayName: 'Running app in a container'
+# - task: CmdLine@2
+#   inputs:
+#     script: 'docker run --name webgoatweb -d -p 8081:8080 -p 9091:9090 webgoat:$(Build.BuildId)'
+#   displayName: 'Running app in a container'
+
+- bash: |
+    docker run --name web -p 8080:80 nginx
 
 - bash: |
     # chmod -R 777  ./
     docker ps
-    echo http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8081
-    curl -L http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8081/WebGoat
+    echo http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080
+    curl -L http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080
     # docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080 -x xml_report.xml
     true
   displayName: 'Owasp Container Scan'
