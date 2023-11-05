@@ -22,4 +22,4 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'build -t webgoat -f ./Dockerfile --build-args webgoat_version=17 .'
+    script: 'docker build -t webgoat -f ./Dockerfile --build-args webgoat_version=17 .'
