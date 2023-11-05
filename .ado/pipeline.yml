@@ -22,6 +22,8 @@ steps:
 
 - task: Docker@2
   inputs:
-    command: 'build'
+    command: 'build'    
     Dockerfile: '**/Dockerfile'
+    buildContext: '.'
+    tags: webgoat
     arguments: 'webgoat_version=17'
