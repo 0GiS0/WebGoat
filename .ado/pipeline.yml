@@ -1,0 +1,11 @@
+name: ZAP Scan
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
