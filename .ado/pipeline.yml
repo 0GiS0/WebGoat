@@ -35,9 +35,10 @@ steps:
 
 # - bash: |
 #     docker run --name web -d -p 8080:80 nginx
-- task: Delay@1
-  inputs:
-    delayForMinutes: '1'
+
+- bash: |
+    sleep 60
+  displayName: Wait for a minute
 
 - bash: |
     docker logs webgoat-site
