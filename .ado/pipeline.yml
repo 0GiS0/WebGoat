@@ -31,12 +31,12 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'docker run -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)'
+    script: 'docker run -d -p 8080:8080 -p 9090:9090 webgoat:$(Build.BuildId)'
   displayName: 'Execute app in a container'
 
 - task: CmdLine@2
   inputs:
-    script: 'curl http://127.0.0.1:8080/WebGoat'
+    script: 'curl http://localhost:8080/WebGoat'
   displayName: 'cURL'
 - task: owaspzap@1
   inputs:
