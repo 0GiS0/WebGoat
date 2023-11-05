@@ -34,3 +34,8 @@ steps:
     script: 'docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 -d webgoat'
   displayName: 'Execute app in a container'
 
+- task: owaspzap@1
+  inputs:
+    scantype: 'targetedScan'
+    url: 'http://localhost/WebGoat'
+    port: '8080'
