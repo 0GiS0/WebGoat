@@ -6,9 +6,7 @@
 	"image": "mcr.microsoft.com/devcontainers/java:1-17-bookworm",
 
 	"features": {
-		"ghcr.io/devcontainers/features/java:1": {},
-		"ghcr.io/devcontainers/features/azure-cli:1": {},
-		"ghcr.io/devcontainers-contrib/features/terraform-asdf:2": {},
+		"ghcr.io/devcontainers/features/java:1": {},		
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
 
