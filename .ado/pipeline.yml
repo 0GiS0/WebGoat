@@ -30,7 +30,6 @@ steps:
     Dockerfile: ./Dockerfile
 
 - bash: |
-    docker network create zap-net
     docker run --name webgoat-site -d -p 8080:8080 webgoat:$(Build.BuildId)
   displayName: 'Running app in a container'
 
@@ -40,11 +39,7 @@ steps:
 
 - bash: |
     docker logs webgoat-site
-    docker inspect  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoat-site
-
 - bash: |
-    chmod -R 777  ./    
-    # docker run --rm --network zap-net -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://$(docker inspect  -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webgoat-site)/WebGoat:8080 -x xml_report.xml
     docker run --user root -v $(pwd):/zap/wrk/:rw --network=host -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080/WebGoat -J report_json.json -w report_md.md -r report_html.html -x xml_report.xml
     true
   displayName: 'OWASP ZAP Scan'
